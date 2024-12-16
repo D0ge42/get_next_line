@@ -37,12 +37,20 @@
 
 char *get_next_line(int fd)
 {
+  int i = 0;
   char buf[BUFFER_SIZE];
-  static char *stash;
+  static char *stash = NULL;
   while(!ft_strchr(buf,'\n'))
   {
     read(fd,buf,BUFFER_SIZE);
+    stash = ft_strjoin(stash,buf);
   }
+  printf("%s\n", stash);
+  char *line = extract_line((char *)stash);
+  printf("%s",line);
+  bzero((char *)stash,ft_strlen(line));
+  memmove(stash,&stash[ft_strlen(line)],2);
+  printf("Stash ora è %s\n",stash);
 }
 
 int	main(void)
@@ -50,6 +58,5 @@ int	main(void)
 	int	fd;
 
 	fd = open("file.txt", O_RDONLY);
-	printf("%s",get_next_line(fd));
-	printf("%s",get_next_line(fd));
+	get_next_line(fd);
 }

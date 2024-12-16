@@ -16,10 +16,14 @@ int ft_strchr(char *str, char c)
 int ft_strlen(char *str)
 {
   int i = 0;
+  if (!str)
+    return 0;
   while(str[i])
     i++;
   return i;
 }
+
+
 
 char *ft_strdup(char *str)
 {
@@ -66,6 +70,28 @@ int ft_list_size(t_list *list)
     i++;
   }
   return i;
+}
+
+char	*ft_strjoin(char  *s1, char  *s2)
+{
+	char		*result;
+	size_t		s1len;
+	size_t		s2len;
+	char		*ret;
+  if (!s1)
+    return ft_strdup(s2);
+	s1len = ft_strlen(s1);
+	s2len = ft_strlen(s2);
+	result = (char *)malloc(sizeof(char) * (s1len + s2len + 1));
+	ret = result;
+	if (!result)
+		return (NULL);
+	while (*s1)
+		*result++ = *s1++;
+	while (*s2)
+		*result++ = *s2++;
+	*result = '\0';
+	return (ret);
 }
 
 char *extract_line(char *str)
