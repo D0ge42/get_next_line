@@ -62,12 +62,13 @@ char	*extract_line(char *str)
 
 char	*get_next_line(int fd)
 {
-	char		buf[BUFFER_SIZE + 1];
+	char		*buf;
 	static char	*stash;
 	int			bytes_read;
 	char		*line;
 	char		*str;
 
+	buf = malloc(sizeof(char ) * BUFFER_SIZE + 1);
 	bytes_read = read(fd, buf, BUFFER_SIZE);
 	while (bytes_read != 0)
 	{
@@ -84,6 +85,7 @@ char	*get_next_line(int fd)
 	// Has to be fixed str = find_new_line(stash);
 	str = find_new_line(stash);
 	free(stash);
+	free(buf);
 	stash = str;
 	return (line);
 }
