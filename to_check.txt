@@ -1,0 +1,17 @@
+• Decrease number of functions used.
+
+• Your function should return the line that was read.
+If there is nothing else to read or if an error occurred, it should return NULL.
+
+• Make sure that your function works as expected both when reading a file and when
+reading from the standard input.
+
+• Because you will have to read files in get_next_line(), add this option to your
+compiler call: -D BUFFER_SIZE=n
+It will define the buffer size for read().
+The buffer size value will be modified by your peer-evaluators and the Moulinette
+in order to test your code.
+
+• memmove, ha bisogno di un parametro versatile.
+
+• BUFFER_SIZE 1000
