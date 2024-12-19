@@ -47,13 +47,13 @@ char	*ft_strjoin(char  *s1, char  *s2)
 	s1len = ft_strlen(s1);
 	s2len = ft_strlen(s2);
 	result = (char *)malloc(sizeof(char) * (s1len + s2len + 1));
-	ret = result;
 	if (!result)
 		return (NULL);
+	ret = result;
 	while (*s1)
 		*result++ = *s1++;
 	while (*s2)
 		*result++ = *s2++;
-	*result = 0;
+	*result = '\0';
 	return (ret);
 }

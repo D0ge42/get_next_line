@@ -3,29 +3,6 @@
 #include <string.h>
 #include <unistd.h>
 
-size_t	ft_strlcpy(char *dest, const char *src, size_t size)
-{
-	size_t	i;
-
-	i = 0;
-	if (size == 0)
-	{
-		while (src[i])
-			i++;
-		return (i);
-	}
-	while (i < size - 1 && src[i] != '\0')
-	{
-		dest[i] = src[i];
-		i++;
-	}
-	if (i < size)
-		dest[i] = '\0';
-	while (src[i] != '\0')
-		i++;
-	return (i);
-}
-
 char	*find_new_line(char *stash)
 {
 	int		i;
@@ -69,14 +46,17 @@ char	*extract_line(char *str)
 
 	i = 0;
 	linelenght = linelen(str);
-	line = malloc(sizeof(char) * linelenght + 1);
+	line = malloc(sizeof(char) * linelenght);
 	while (str[i] != '\n' && str[i] != '\0')
 	{
 		line[i] = str[i];
 		i++;
 	}
 	if (str[i] == '\n')
-	line[i] = '\n';
+		line[i] = '\n';
+	else
+		line[i] = '\0';
+	line[i + 1] = '\0';
 	return (line);
 }
 
@@ -91,7 +71,7 @@ char	*get_next_line(int fd)
 	bytes_read = read(fd, buf, BUFFER_SIZE);
 	while (bytes_read != 0)
 	{
-		buf[BUFFER_SIZE] = '\0';
+		buf[bytes_read] = '\0';
 		if (ft_strchr(buf, '\n'))
 		{
 			stash = ft_strjoin(stash, buf);
@@ -111,12 +91,15 @@ char	*get_next_line(int fd)
 int	main(void)
 {
 	int	fd;
+	int	i;
 
 	fd = open("file.txt", O_RDONLY);
 	// Change how many lines you wanna read.
-	printf("%s", get_next_line(fd));
-	printf("%s", get_next_line(fd));
-	printf("%s", get_next_line(fd));
-	printf("%s", get_next_line(fd));
-	printf("%s", get_next_line(fd));
+	i = 22;
+	while (i)
+	{
+		printf("%s", get_next_line(fd));
+		i--;
+	}
+	// printf("%s",extract_line("1\n\n1\n1\n1\n\n1"));
 }

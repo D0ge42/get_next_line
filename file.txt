@@ -1,5 +1,22 @@
-a
-Be
-cba
-asdfkjhgkalsdfhaksdjfsadfkj
-123456789
+hdsfhsdf
+hdsfh
+fsdh
+char	*extract_line(char *str)
+{
+	int		i;
+	int		linelenght;
+	char	*line;
+
+	i = 0;
+	linelenght = linelen(str);
+	line = malloc(sizeof(char) * linelenght + 1);
+	while (str[i] != '\n' && str[i] != '\0')
+	{
+		line[i] = str[i];
+		i++;
+	}
+	if (str[i] == '\n')
+	line[i] = '\n';
+	return (line);
+}fsdh
+fhsdf
