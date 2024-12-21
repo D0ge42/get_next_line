@@ -3,7 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 
-char	*find_new_line(char *stash)
+char	*update_stash(char *stash)
 {
 	int		i;
 	char	*new_stash;
@@ -69,46 +69,42 @@ char	*extract_line(char *str)
 	return (line);
 }
 
-char *join_and_free(char *temp, char *stash, char *buf)
+char	*join_and_free(char *stash, char *buf)
 {
+	char	*temp;
+
 	temp = stash;
-	stash = ft_strjoin(stash,buf);
+	stash = ft_strjoin(stash, buf);
 	free(temp);
+	return (stash);
 }
 
 char	*get_next_line(int fd)
 {
-	char		*buf;
+	char		*line;
 	static char	*stash;
 	int			bytes_read;
-	char		*line;
 	char		*temp;
 
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
 		return (NULL);
-	buf = malloc(sizeof(char) * BUFFER_SIZE + 1);
-	if (!buf)
-		return NULL;
-	bytes_read = read(fd, buf, BUFFER_SIZE);
+	line = malloc(sizeof(char) * BUFFER_SIZE + 1);
+	bytes_read = read(fd, line, BUFFER_SIZE);
 	while (bytes_read > 0)
 	{
-		buf[bytes_read] = '\0';
-		if (ft_strchr(buf, '\n'))
+		line[bytes_read] = '\0';
+		if (ft_strchr(line, '\n'))
 		{
-			temp = stash;
-			stash = ft_strjoin(stash, buf);
-			free(temp);
+			stash = join_and_free(stash, line);
 			break ;
 		}
-		temp = stash;
-		stash = ft_strjoin(stash, buf);
-		free(temp);
-		bytes_read = read(fd, buf, BUFFER_SIZE);
+		stash = join_and_free(stash, line);
+		bytes_read = read(fd, line, BUFFER_SIZE);
 	}
-	free(buf);
+	free(line);
 	line = extract_line(stash);
 	temp = stash;
-	stash = find_new_line(stash);
+	stash = update_stash(stash);
 	free(temp);
 	return (line);
 }
