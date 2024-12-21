@@ -48,7 +48,7 @@ char	*extract_line(char *str)
 	int		linelenght;
 	char	*line;
 
-	if (!str)
+	if (!str || ft_strlen(str) == 0)
 		return (NULL);
 	i = 0;
 	if (str)
@@ -69,7 +69,12 @@ char	*extract_line(char *str)
 	return (line);
 }
 
-
+char *join_and_free(char *temp, char *stash, char *buf)
+{
+	temp = stash;
+	stash = ft_strjoin(stash,buf);
+	free(temp);
+}
 
 char	*get_next_line(int fd)
 {
@@ -108,19 +113,19 @@ char	*get_next_line(int fd)
 	return (line);
 }
 
-/*int	main(void)
-{
-	int		fd;
-	int		i;
-	char	*line;
+// int	main(void)
+// {
+// 	int		fd;
+// 	int		i;
+// 	char	*line;
 
-	fd = open("file.txt", O_RDONLY);
-	i = 37;
-	while (i)
-	{
-		line = get_next_line(fd);
-		printf("%s", line);
-		free(line);
-		i--;
-	}
-}*/
+// 	fd = open("/home/doge/get_next_line/gnlTester/files/nl", O_RDONLY);
+// 	i = 2;
+// 	while (i)
+// 	{
+// 		line = get_next_line(fd);
+// 		printf("%s", line);
+// 		free(line);
+// 		i--;
+// 	}
+// }
