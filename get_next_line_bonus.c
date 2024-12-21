@@ -89,18 +89,20 @@ char	*get_next_line(int fd)
 	static char	*stash;
 	int			bytes_read;
 	char		*temp;
+	int FDS[1024];
 
+	FDS[fd] = fd;
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
 		return (NULL);
 	line = malloc(sizeof(char) * BUFFER_SIZE + 1);
-	bytes_read = read(fd, line, BUFFER_SIZE);
+	bytes_read = read(FDS[fd], line, BUFFER_SIZE);
 	while (bytes_read > 0)
 	{
 		line[bytes_read] = '\0';
 		stash = join_and_free(stash, line);
 		if (ft_strchr(line, '\n'))
 			break ;
-		bytes_read = read(fd, line, BUFFER_SIZE);
+		bytes_read = read(FDS[fd], line, BUFFER_SIZE);
 	}
 	line = extract_line(stash, line);
 	temp = stash;
@@ -109,19 +111,20 @@ char	*get_next_line(int fd)
 	return (line);
 }
 
-// int	main(void)
-// {
-// 	int		fd;
-// 	int		i;
-// 	char	*line;
 
-// 	fd = open("/home/doge/get_next_line/gnlTester/files/nl", O_RDONLY);
-// 	i = 2;
-// 	while (i)
-// 	{
-// 		line = get_next_line(fd);
-// 		printf("%s", line);
-// 		free(line);
-// 		i--;
-// 	}
-// }
+int	main(void)
+{
+	int		fd1;
+	int		fd2;
+	int		i;
+	char	*line;
+
+	fd1 = open("file.txt", O_RDONLY);
+	fd2 = open("file2.txt",O_RDONLY);
+
+	printf("%s",get_next_line(fd1));
+	printf("%s",get_next_line(fd1));
+	printf("%s",get_next_line(fd2));
+	printf("%s",get_next_line(fd1));
+	printf("%s",get_next_line(fd2));
+}
