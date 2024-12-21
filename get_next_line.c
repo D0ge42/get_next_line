@@ -9,18 +9,22 @@ char	*find_new_line(char *stash)
 	char	*new_stash;
 	int		j;
 
+	if (!stash)
+		return (NULL);
 	i = 0;
-	// Find first new line.
 	while (stash[i] != '\n' && stash[i] != '\0')
 		i++;
 	if (stash[i] == '\n')
 		i += 1;
 	j = i;
-	// Find end
 	while (stash[j])
 		j++;
-	// Allocate enough memory for new stash.
 	new_stash = malloc(sizeof(char) * (j - i) + 1);
+	if (((j - i) == 0 && !ft_strchr(stash, '\n')) || !new_stash)
+	{
+		free(new_stash);
+		return (NULL);
+	}
 	j = 0;
 	while (stash[i])
 		new_stash[j++] = stash[i++];
@@ -44,9 +48,14 @@ char	*extract_line(char *str)
 	int		linelenght;
 	char	*line;
 
+	if (!str)
+		return (NULL);
 	i = 0;
-	linelenght = linelen(str);
-	line = malloc(sizeof(char) * linelenght);
+	if (str)
+		linelenght = linelen(str);
+	else
+		linelenght = ft_strlen(str);
+	line = malloc(sizeof(char) * linelenght + 1);
 	while (str[i] != '\n' && str[i] != '\0')
 	{
 		line[i] = str[i];
@@ -60,48 +69,58 @@ char	*extract_line(char *str)
 	return (line);
 }
 
+
+
 char	*get_next_line(int fd)
 {
 	char		*buf;
 	static char	*stash;
 	int			bytes_read;
 	char		*line;
-	char		*str;
+	char		*temp;
 
-	buf = malloc(sizeof(char ) * BUFFER_SIZE + 1);
+	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
+		return (NULL);
+	buf = malloc(sizeof(char) * BUFFER_SIZE + 1);
+	if (!buf)
+		return NULL;
 	bytes_read = read(fd, buf, BUFFER_SIZE);
-	while (bytes_read != 0)
+	while (bytes_read > 0)
 	{
 		buf[bytes_read] = '\0';
 		if (ft_strchr(buf, '\n'))
 		{
+			temp = stash;
 			stash = ft_strjoin(stash, buf);
+			free(temp);
 			break ;
 		}
+		temp = stash;
 		stash = ft_strjoin(stash, buf);
+		free(temp);
 		bytes_read = read(fd, buf, BUFFER_SIZE);
 	}
-	line = extract_line(stash);
-	// Has to be fixed str = find_new_line(stash);
-	str = find_new_line(stash);
-	free(stash);
 	free(buf);
-	stash = str;
+	line = extract_line(stash);
+	temp = stash;
+	stash = find_new_line(stash);
+	free(temp);
 	return (line);
 }
 
-int	main(void)
+/*int	main(void)
 {
-	int	fd;
-	int	i;
+	int		fd;
+	int		i;
+	char	*line;
 
 	fd = open("file.txt", O_RDONLY);
-	// Change how many lines you wanna read.
-	i = 22;
+	i = 37;
 	while (i)
 	{
-		printf("%s", get_next_line(fd));
+		line = get_next_line(fd);
+		printf("%s", line);
+		free(line);
 		i--;
 	}
-	// printf("%s",extract_line("1\n\n1\n1\n1\n\n1"));
-}
+}*/
