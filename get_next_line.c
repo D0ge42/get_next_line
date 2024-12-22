@@ -1,10 +1,9 @@
 #include "get_next_line.h"
-#include <fcntl.h>
-#include <string.h>
-#include <unistd.h>
 
 /*Function to update stash to the next new line.
-Paramaters: Takes stash and make a new one out of it.*/
+It also handle the case where the end of file is reached.
+Paramaters: Takes stash and make a new one out of it.
+Return value: New stash. */
 
 char	*update_stash(char *stash)
 {
@@ -35,6 +34,10 @@ char	*update_stash(char *stash)
 	return (new_stash);
 }
 
+/*Function to calculate lenght of a string until a "\n" is met.
+Takes a string as parameter. Return the start of the next line we've to print.
+Done by adding +1 to the index where we find the new line.*/
+
 int	linelen(char *str)
 {
 	int	i;
@@ -44,6 +47,12 @@ int	linelen(char *str)
 		i++;
 	return (i + 1);
 }
+
+/*Extract line we'll get the string out of the current stash.
+Will also free the old_line
+Parameters: String stash, from where we'll extract the line to print.
+Old line, which is the old line we've to free.(The buffer where we've used read.
+Return values: Line we've to print.*/
 
 char	*extract_line(char *str, char *old_line)
 {
@@ -73,6 +82,10 @@ char	*extract_line(char *str, char *old_line)
 	return (line);
 }
 
+/*Function that will join stash with buffer and also free previous buffer.
+Parameters: Old stash, and the buffer to join with the string.
+Return values: New stash.*/
+
 char	*join_and_free(char *stash, char *buf)
 {
 	char	*temp;
@@ -82,6 +95,18 @@ char	*join_and_free(char *stash, char *buf)
 	free(temp);
 	return (stash);
 }
+
+/* Workflow of main function:
+1) Check for errors before making any read call.
+2) Allocate enough space for the line we'll join to the stash.
+3) Initial read call to enter loop.
+4) Null terminate current buffer("line") and join it to stash.
+5) When a new line is met we break, else we keep reading.
+6) We've now a stash, from where to extract the line.
+7) We updated the new stash by removing until "\n"
+8) Free (temp) which is the old stash. <-- Only made to free last stash call
+9) Almost all frees happens inside sub-functions.
+10) Return the new line. */
 
 char	*get_next_line(int fd)
 {
@@ -108,20 +133,3 @@ char	*get_next_line(int fd)
 	free(temp);
 	return (line);
 }
-
-// int	main(void)
-// {
-// 	int		fd;
-// 	int		i;
-// 	char	*line;
-
-// 	fd = open("/home/doge/get_next_line/gnlTester/files/nl", O_RDONLY);
-// 	i = 2;
-// 	while (i)
-// 	{
-// 		line = get_next_line(fd);
-// 		printf("%s", line);
-// 		free(line);
-// 		i--;
-// 	}
-// }

@@ -1,4 +1,7 @@
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
+
+/*Function to look for a certain char inside a string.
+In my case we'll use it to search a '\n'*/
 
 int	ft_strchr(char *str, char c)
 {
@@ -10,6 +13,8 @@ int	ft_strchr(char *str, char c)
 	}
 	return (0);
 }
+
+/*Calculate string lenght*/
 
 int	ft_strlen(char *str)
 {
@@ -23,6 +28,7 @@ int	ft_strlen(char *str)
 	return (i);
 }
 
+/*Duplicate a given string using malloc.*/
 
 char	*ft_strdup(char *str)
 {
@@ -47,6 +53,8 @@ char	*ft_strdup(char *str)
 	new[i] = '\0';
 	return (new);
 }
+
+/*Join 2 strings togheter in a new one, using malloc*/
 
 char	*ft_strjoin(char *s1, char *s2)
 {

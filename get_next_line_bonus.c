@@ -1,10 +1,9 @@
-#include "get_next_line.h"
-#include <fcntl.h>
-#include <string.h>
-#include <unistd.h>
+#include "get_next_line_bonus.h"
 
 /*Function to update stash to the next new line.
-Paramaters: Takes stash and make a new one out of it.*/
+It also handle the case where the end of file is reached.
+Paramaters: Takes stash and make a new one out of it.
+Return value: New stash. */
 
 char	*update_stash(char *stash)
 {
@@ -35,6 +34,10 @@ char	*update_stash(char *stash)
 	return (new_stash);
 }
 
+/*Function to calculate lenght of a string until a "\n" is met.
+Takes a string as parameter. Return the start of the next line we've to print.
+Done by adding +1 to the index where we find the new line.*/
+
 int	linelen(char *str)
 {
 	int	i;
@@ -45,33 +48,43 @@ int	linelen(char *str)
 	return (i + 1);
 }
 
-char	*extract_line(char *str, char *old_line)
+/*Extract line we'll get the string out of the current stash.
+Will also free the old_line
+Parameters: String stash, from where we'll extract the line to print.
+Old line, which is the old line we've to free.(The buffer where we've used read.
+Return values: Line we've to print.*/
+
+char	*extract_line(char *stash, char *old_line)
 {
 	int		i;
 	int		linelenght;
 	char	*line;
 
 	free(old_line);
-	if (!str || ft_strlen(str) == 0)
+	if (!stash || ft_strlen(stash) == 0)
 		return (NULL);
 	i = 0;
-	if (str)
-		linelenght = linelen(str);
+	if (stash)
+		linelenght = linelen(stash);
 	else
-		linelenght = ft_strlen(str);
+		linelenght = ft_strlen(stash);
 	line = malloc(sizeof(char) * linelenght + 1);
-	while (str[i] != '\n' && str[i] != '\0')
+	while (stash[i] != '\n' && stash[i] != '\0')
 	{
-		line[i] = str[i];
+		line[i] = stash[i];
 		i++;
 	}
-	if (str[i] == '\n')
+	if (stash[i] == '\n')
 		line[i] = '\n';
 	else
 		line[i] = '\0';
 	line[i + 1] = '\0';
 	return (line);
 }
+
+/*Function that will join stash with buffer and also free previous buffer.
+Parameters: Old stash, and the buffer to join with the string.
+Return values: New stash.*/
 
 char	*join_and_free(char *stash, char *buf)
 {
@@ -83,48 +96,42 @@ char	*join_and_free(char *stash, char *buf)
 	return (stash);
 }
 
+/* Workflow of main function:
+1) Check for errors before making any read call.
+2) Allocate enough space for the line we'll join to the stash at FD index.
+3) Initial read call to enter loop.
+4) Null terminate current buffer("line") and join it to stash at FD index.
+5) When a new line is met we break, else we keep reading.
+6) We now have an unique stash from where to extract the line.
+7) We updated the new stash by removing until "\n"
+8) Free (temp) which is the old stash[fd]. <-- Only made to free last stash call
+9) Almost all frees happens inside sub-functions.
+10) Return the new line. */
+
 char	*get_next_line(int fd)
 {
 	char		*line;
-	static char	*stash;
+	static char	*stash[1024];
 	int			bytes_read;
 	char		*temp;
-	int FDS[1024];
+	int			fds[1024];
 
-	FDS[fd] = fd;
+	fds[fd] = fd;
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
 		return (NULL);
 	line = malloc(sizeof(char) * BUFFER_SIZE + 1);
-	bytes_read = read(FDS[fd], line, BUFFER_SIZE);
+	bytes_read = read(fds[fd], line, BUFFER_SIZE);
 	while (bytes_read > 0)
 	{
 		line[bytes_read] = '\0';
-		stash = join_and_free(stash, line);
+		stash[fd] = join_and_free(stash[fd], line);
 		if (ft_strchr(line, '\n'))
 			break ;
-		bytes_read = read(FDS[fd], line, BUFFER_SIZE);
+		bytes_read = read(fds[fd], line, BUFFER_SIZE);
 	}
-	line = extract_line(stash, line);
-	temp = stash;
-	stash = update_stash(stash);
+	line = extract_line(stash[fd], line);
+	temp = stash[fd];
+	stash[fd] = update_stash(stash[fd]);
 	free(temp);
 	return (line);
-}
-
-
-int	main(void)
-{
-	int		fd1;
-	int		fd2;
-	int		i;
-	char	*line;
-
-	fd1 = open("file.txt", O_RDONLY);
-	fd2 = open("file2.txt",O_RDONLY);
-
-	printf("%s",get_next_line(fd1));
-	printf("%s",get_next_line(fd1));
-	printf("%s",get_next_line(fd2));
-	printf("%s",get_next_line(fd1));
-	printf("%s",get_next_line(fd2));
 }
