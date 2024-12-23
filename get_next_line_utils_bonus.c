@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line_utils_bonus.c                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lonulli <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/23 09:17:53 by lonulli           #+#    #+#             */
+/*   Updated: 2024/12/23 09:17:54 by lonulli          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line_bonus.h"
 
 /*Function to look for a certain char inside a string.
@@ -77,4 +89,14 @@ char	*ft_strjoin(char *s1, char *s2)
 		*result++ = *s2++;
 	*result = '\0';
 	return (ret);
+}
+
+char	*safe_malloc(void)
+{
+	char	*line;
+
+	line = malloc(sizeof(char) * BUFFER_SIZE + 1);
+	if (!line)
+		return (NULL);
+	return (line);
 }

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lonulli <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/23 09:17:21 by lonulli           #+#    #+#             */
+/*   Updated: 2024/12/23 09:17:22 by lonulli          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line.h"
 
 /*Function to update stash to the next new line.
@@ -117,7 +129,7 @@ char	*get_next_line(int fd)
 
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
 		return (NULL);
-	line = malloc(sizeof(char) * BUFFER_SIZE + 1);
+	line = safe_malloc();
 	bytes_read = read(fd, line, BUFFER_SIZE);
 	while (bytes_read > 0)
 	{
