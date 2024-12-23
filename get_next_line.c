@@ -127,7 +127,7 @@ char	*get_next_line(int fd)
 	int			bytes_read;
 	char		*temp;
 
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
+	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	line = safe_malloc();
 	bytes_read = read(fd, line, BUFFER_SIZE);
