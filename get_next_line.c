@@ -34,7 +34,7 @@ char	*update_stash(char *stash)
 	while (stash[j])
 		j++;
 	new_stash = malloc(sizeof(char) * (j - i) + 1);
-	if (((j - i) == 0 && !ft_strchr(stash, '\n')) || !new_stash)
+	if (((j - i) == 0 && !ft_strchr(stash, '\n')))
 	{
 		free(new_stash);
 		return (NULL);
@@ -130,7 +130,8 @@ char	*get_next_line(int fd)
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	line = safe_malloc();
-	bytes_read = read(fd, line, BUFFER_SIZE);
+	if (line)
+		bytes_read = read(fd, line, BUFFER_SIZE);
 	while (bytes_read > 0)
 	{
 		line[bytes_read] = '\0';

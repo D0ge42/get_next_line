@@ -126,20 +126,19 @@ char	*get_next_line(int fd)
 	static char	*stash[1024];
 	int			bytes_read;
 	char		*temp;
-	int			fds[1024];
 
-	fds[fd] = fd;
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	line = safe_malloc();
-	bytes_read = read(fds[fd], line, BUFFER_SIZE);
+	if (line)
+		bytes_read = read(fd, line, BUFFER_SIZE);
 	while (bytes_read > 0)
 	{
 		line[bytes_read] = '\0';
 		stash[fd] = join_and_free(stash[fd], line);
 		if (ft_strchr(line, '\n'))
 			break ;
-		bytes_read = read(fds[fd], line, BUFFER_SIZE);
+		bytes_read = read(fd, line, BUFFER_SIZE);
 	}
 	line = extract_line(stash[fd], line);
 	temp = stash[fd];
