@@ -130,8 +130,9 @@ char	*get_next_line(int fd)
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	line = safe_malloc();
-	if (line)
-		bytes_read = read(fd, line, BUFFER_SIZE);
+	if (!line)
+		return (NULL);
+	bytes_read = read(fd, line, BUFFER_SIZE);
 	while (bytes_read > 0)
 	{
 		line[bytes_read] = '\0';

@@ -57,6 +57,8 @@ char	*ft_strdup(char *str)
 	}
 	len = ft_strlen(str);
 	new = malloc(sizeof(char) * len + 1);
+	if (!new)
+		return (NULL);
 	while (str[i])
 	{
 		new[i] = str[i];
